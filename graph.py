@@ -8,7 +8,7 @@ class CalNode:
     op: Ops
     output: Tensor
     inputs: list[Tensor]
-    other : Any
+    other: Any
 
     def __init__(self, op: Ops, inputs: list[Tensor], output: Tensor):
         self.op = op

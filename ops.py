@@ -103,7 +103,7 @@ def maximum(tensor1: Tensor, tensor2: Tensor) -> Tensor:
         raise ValueError(e) from e
 
     ret = Tensor(result)
-    ret.graph = CalNode(Ops.max, [tensor1, tensor2], ret)
+    ret.graph = CalNode(Ops.maximum, [tensor1, tensor2], ret)
     return ret
 
 
