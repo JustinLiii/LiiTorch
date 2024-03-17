@@ -1,24 +1,10 @@
 import numpy as np
 
 from tensor import Tensor
-from enum import Enum
 from graph import CalNode
+from enums import Ops
 
 
-class Ops(Enum):
-    # 注意加入枚举
-    add: 0
-    mul: 1
-    dot: 2
-    power: 3
-    log: 4
-    true_divide: 5
-    floor_divide: 6
-    maximum: 7
-    concat: 8
-
-
-# TODO: Broadcast
 def add(tensor1: Tensor, tensor2: Tensor) -> Tensor:
     try:
         result = tensor1.data + tensor2.data
@@ -48,7 +34,7 @@ def true_divide(tensor1: Tensor, tensor2: Tensor) -> Tensor:
         raise ValueError(e) from e
 
     ret = Tensor(result)
-    ret.graph = CalNode(Ops.mul, [tensor1, tensor2], ret)
+    ret.graph = CalNode(Ops.true_divide, [tensor1, tensor2], ret)
     return ret
 
 
@@ -59,7 +45,7 @@ def floor_divide(tensor1: Tensor, tensor2: Tensor) -> Tensor:
         raise ValueError(e) from e
 
     ret = Tensor(result)
-    ret.graph = CalNode(Ops.mul, [tensor1, tensor2], ret)
+    ret.graph = CalNode(Ops.floor_divide, [tensor1, tensor2], ret)
     return ret
 
 
@@ -74,25 +60,25 @@ def dot(tensor1: Tensor, tensor2: Tensor) -> Tensor:
     return ret
 
 
-def power(tensor: Tensor, base: Tensor | float = np.e) -> Tensor:
+def power(tensor1: Tensor, base: Tensor | float = np.e) -> Tensor:
     try:
-        result = np.power(tensor.data, base)
+        result = np.power(tensor1.data, base)
     except ValueError as e:
         raise ValueError(e) from e
 
     ret = Tensor(result)
-    ret.graph = CalNode(Ops.power, [tensor, base], ret)
+    ret.graph = CalNode(Ops.power, [tensor1, base], ret)
     return ret
 
 
-def log(tensor: Tensor) -> Tensor:
+def log(tensor1: Tensor) -> Tensor:
     try:
-        result = np.log(tensor.data)
+        result = np.log(tensor1.data)
     except ValueError as e:
         raise ValueError(e) from e
 
     ret = Tensor(result)
-    ret.graph = CalNode(Ops.log, [tensor], ret)
+    ret.graph = CalNode(Ops.log, [tensor1], ret)
     return ret
 
 
@@ -109,7 +95,7 @@ def maximum(tensor1: Tensor, tensor2: Tensor) -> Tensor:
 
 def concat(tensors: list[Tensor], axis: int):
     try:
-        result = np.concatenate([tensor.data for tensor in tensors], axis=axis)
+        result = np.concatenate([t.data for t in tensors], axis=axis)
     except ValueError as e:
         raise ValueError(e) from e
 
